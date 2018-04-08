@@ -23,7 +23,6 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // TODO: exceptions handling
         DataInputStream in = new DataInputStream(request.getInputStream());
         String phoneNumber = in.readUTF();
         String password = in.readUTF();
