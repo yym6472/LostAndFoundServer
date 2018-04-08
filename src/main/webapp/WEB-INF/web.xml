@@ -3,15 +3,17 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <!---->
-  <!--<servlet>-->
-    <!--<servlet-name>HelloWorldServlet</servlet-name>-->
-    <!--<servlet-class>com.yymstaygold.servlettest.servlets.HelloWorldServlet</servlet-class>-->
-  <!--</servlet>-->
-  <!--<servlet-mapping>-->
-    <!--<servlet-name>HelloWorldServlet</servlet-name>-->
-    <!--<url-pattern>/HelloWorld</url-pattern>-->
-  <!--</servlet-mapping>-->
 
   <display-name>Archetype Created Web Application</display-name>
+  
+  <servlet>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>com.yymstaygold.lostandfound.server.servlet.RegisterServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>RegisterServlet</servlet-name>
+    <url-pattern>/register</url-pattern>
+  </servlet-mapping>
+
 </web-app>
