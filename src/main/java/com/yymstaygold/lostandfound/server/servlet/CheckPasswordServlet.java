@@ -18,12 +18,12 @@ import java.sql.Statement;
 /**
  * Created by yanyu on 2018/4/8.
  */
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "CheckPasswordServlet", urlPatterns = {"/check_password"})
+public class CheckPasswordServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // TODO: exceptions handling
+        //TODO: exceptions handling
         DataInputStream in = new DataInputStream(request.getInputStream());
         String phoneNumber = in.readUTF();
         String password = in.readUTF();
@@ -33,21 +33,19 @@ public class RegisterServlet extends HttpServlet {
         try {
             Connection conn = DatabaseConnectionPool.getInstance().getConnection();
             Statement stat = conn.createStatement();
-            ResultSet res = stat.executeQuery(
-                    "SELECT * FROM LostAndFound.User " +
-                            "WHERE phoneNumber = \"" + phoneNumber + "\"");
+            ResultSet res = stat.executeQuery("SELECT userId FROM LostAndFound.User " +
+                    "WHERE password = \"" + password + "\" " +
+                    "AND phoneNumber = \"" + phoneNumber + "\"");
             if (res.next()) {
-                out.writeBoolean(false);
+                out.writeInt(res.getInt("userId"));
             } else {
-                stat.execute("INSERT INTO LostAndFound.User " +
-                        "VALUE(NULL, \"" + password + "\", \"" + phoneNumber + "\")");
-                out.writeBoolean(true);
+                out.writeInt(-1);
             }
             res.close();
             stat.close();
             conn.close();
         } catch (SQLException e) {
-            out.writeBoolean(false);
+            out.writeInt(-1);
             e.printStackTrace();
         }
         out.close();
