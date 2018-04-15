@@ -19,7 +19,7 @@ public class UploadImageServlet extends HttpServlet {
 
         Properties prop = new Properties();
         FileInputStream settings = new FileInputStream(
-                "../webapps/LostAndFoundServer/WEB-INF/classes/settings.properties");
+                "./webapps/LostAndFoundServer/WEB-INF/classes/settings.properties");
         prop.load(settings);
         settings.close();
         String imagePath = prop.getProperty("server.imagePath");
