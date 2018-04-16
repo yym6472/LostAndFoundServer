@@ -2,10 +2,8 @@ package com.yymstaygold.lostandfound.server.entity;
 
 import com.yymstaygold.lostandfound.server.util.dbcp.DatabaseConnectionPool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.xml.crypto.Data;
+import java.sql.*;
 import java.util.Date;
 
 /**
@@ -73,6 +71,33 @@ public class Found {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void store() {
+        item.store();
+
+        try {
+            Connection conn = DatabaseConnectionPool.getInstance().getConnection();
+            PreparedStatement pStat = conn.prepareStatement(
+                    "INSERT INTO LostAndFound.Found VALUES " +
+                    "(null, ?, ?, ?, ?, ?, ?, 0)", Statement.RETURN_GENERATED_KEYS);
+            pStat.setString(1, foundName);
+            pStat.setInt(2, userId);
+            pStat.setInt(3, item.getItemId());
+            pStat.setDate(4, new java.sql.Date(foundTime.getTime()));
+            pStat.setDouble(5, foundPositionX);
+            pStat.setDouble(6, foundPositionY);
+            pStat.executeUpdate();
+            ResultSet res = pStat.getGeneratedKeys();
+            if (res.next()) {
+                foundId = res.getInt(1);
+            }
+            res.close();
+            pStat.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

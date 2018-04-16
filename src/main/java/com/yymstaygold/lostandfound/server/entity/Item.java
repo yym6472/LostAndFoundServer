@@ -4,10 +4,7 @@ import com.yymstaygold.lostandfound.server.util.dbcp.DatabaseConnectionPool;
 
 import javax.swing.plaf.nimbus.State;
 import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,6 +69,43 @@ public class Item {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void store() {
+        try {
+            Connection conn = DatabaseConnectionPool.getInstance().getConnection();
+            PreparedStatement pStat = conn.prepareStatement(
+                    "INSERT INTO LostAndFound.Item VALUES (null, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            pStat.setInt(1, type);
+            if (type == 10) {
+                pStat.setString(2, customTypeName);
+            } else {
+                pStat.setNull(2, Types.VARCHAR);
+            }
+            pStat.setString(3, imagePath);
+            pStat.executeUpdate();
+
+            ResultSet res = pStat.getGeneratedKeys();
+            if (res.next()) {
+                itemId = res.getInt(1);
+            }
+            res.close();
+            pStat.close();
+
+            pStat = conn.prepareStatement(
+                    "INSERT INTO LostAndFound.Property VALUES (null, ?, ?, ?)");
+            pStat.setInt(3, itemId);
+            for (String key : properties.keySet()) {
+                pStat.setString(1, key);
+                pStat.setString(2, properties.get(key));
+                pStat.executeUpdate();
+            }
+            pStat.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

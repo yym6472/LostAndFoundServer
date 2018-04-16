@@ -2,10 +2,8 @@ package com.yymstaygold.lostandfound.server.entity;
 
 import com.yymstaygold.lostandfound.server.util.dbcp.DatabaseConnectionPool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.xml.crypto.Data;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -72,6 +70,49 @@ public class Lost {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void store() {
+        item.store();
+
+        try {
+            Connection conn = DatabaseConnectionPool.getInstance().getConnection();
+            PreparedStatement pStat = conn.prepareStatement(
+                    "INSERT INTO LostAndFound.Lost VALUES " +
+                            "(null, ?, ?, ?, 0)", Statement.RETURN_GENERATED_KEYS);
+            pStat.setString(1, lostName);
+            pStat.setInt(2, userId);
+            pStat.setInt(3, item.getItemId());
+            pStat.executeUpdate();
+            ResultSet res = pStat.getGeneratedKeys();
+            if (res.next()) {
+                lostId = res.getInt(1);
+            }
+            res.close();
+            pStat.close();
+
+            pStat = conn.prepareStatement(
+                    "INSERT INTO LostAndFound.LostPositionInfo VALUES " +
+                            "(null, ?, ?, ?, ?)");
+            pStat.setInt(4, lostId);
+            int recordSize = lostPositionInfoTime.size();
+            assert lostPositionInfoPositionX.size() == recordSize;
+            assert lostPositionInfoPositionY.size() == recordSize;
+            for (int i = 0; i < recordSize; ++i) {
+                pStat.setDate(1, new java.sql.Date(
+                        lostPositionInfoTime.get(i).getTime()));
+                pStat.setDouble(2,
+                        lostPositionInfoPositionX.get(i));
+                pStat.setDouble(3,
+                        lostPositionInfoPositionY.get(i));
+                pStat.executeUpdate();
+            }
+            pStat.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
