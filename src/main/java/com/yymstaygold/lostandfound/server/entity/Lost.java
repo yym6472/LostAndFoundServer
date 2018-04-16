@@ -21,6 +21,8 @@ public class Lost {
     private ArrayList<Double> lostPositionInfoPositionX;
     private ArrayList<Double> lostPositionInfoPositionY;
 
+    public Lost() {}
+
     private Lost(int lostId) {
         this.lostId = lostId;
         try {

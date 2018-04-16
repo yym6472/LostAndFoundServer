@@ -21,6 +21,8 @@ public class Found {
     private double foundPositionX;
     private double foundPositionY;
 
+    public Found() {}
+
     private Found(int foundId) {
         this.foundId = foundId;
         try {

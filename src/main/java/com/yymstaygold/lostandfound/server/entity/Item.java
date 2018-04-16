@@ -21,6 +21,8 @@ public class Item {
     private String imagePath;
     private Map<String, String> properties;
 
+    public Item() {}
+
     private Item(int itemId) {
         this.itemId = itemId;
         try {
