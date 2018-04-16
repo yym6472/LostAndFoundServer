@@ -29,7 +29,6 @@ public class DownloadImageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String imagePath = (String) request.getParameter("imagePath");
-        System.out.println("IMAGEPATH: " + imagePath);
         if (imagePath != null) {
             File imageFile = new File(imagePath);
             outputFileToStream(imageFile, response);
