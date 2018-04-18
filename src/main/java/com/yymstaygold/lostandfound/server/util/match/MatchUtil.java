@@ -25,7 +25,7 @@ public class MatchUtil {
         try {
             Properties prop = new Properties();
             FileInputStream settings = new FileInputStream(
-                    "../webapps/LostAndFoundServer/WEB-INF/classes/settings.properties");
+                    "./webapps/LostAndFoundServer/WEB-INF/classes/settings.properties");
             prop.load(settings);
             settings.close();
             SIGMA = new Double(prop.getProperty("server.algorithm.sigma"));
