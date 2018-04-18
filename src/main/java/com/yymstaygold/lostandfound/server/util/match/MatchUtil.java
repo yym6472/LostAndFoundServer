@@ -38,8 +38,7 @@ public class MatchUtil {
 
     public static double getTotalScore(Lost lost, Found found) {
 
-        // TODO: change the algorithm
-        return getLocationMatchScore(lost, found) +
+        return getLocationMatchScore(lost, found) *
                 getItemMatchScore(lost.getItem(), found.getItem());
     }
 
@@ -61,8 +60,11 @@ public class MatchUtil {
     }
 
     private static double getItemMatchScore(Item item1, Item item2) {
-        // TODO: implement the item match algorithm
-        return 0.0;
+        if (item1.getType() == item2.getType()) {
+            return 1.0;
+        } else {
+            return 0.1;
+        }
     }
 
     private static double getProbability(double x1, double y1, double x2, double y2) {

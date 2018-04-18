@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by yanyu on 2018/4/12.
@@ -30,13 +27,27 @@ public class CheckNewFoundsServlet extends HttpServlet {
         DataOutputStream out = new DataOutputStream(response.getOutputStream());
         try {
             Connection conn = DatabaseConnectionPool.getInstance().getConnection();
-            Statement stat = conn.createStatement();
-            ResultSet res = stat.executeQuery("SELECT foundId " +
-                    "FROM LostAndFound.MatchInfo " +
-                    "WHERE userId = " + userId);
+            PreparedStatement pStat = conn.prepareStatement("SELECT lostId, foundId " +
+                    "FROM LostAndFound.MatchInfo NATURAL JOIN LostAndFound.Lost " +
+                    "WHERE userId = ?");
+            pStat.setInt(1, userId);
+            ResultSet res = pStat.executeQuery();
+            PreparedStatement pStat2 = conn.prepareStatement(
+                    "DELETE FROM LostAndFound.MatchInfo " +
+                            "WHERE lostId = ? AND foundId = ?");
             while (res.next()) {
-                out.writeInt(res.getInt("foundId"));
+                int lostId = res.getInt("lostId");
+                int foundId = res.getInt("foundId");
+                out.writeInt(lostId);
+                out.writeInt(foundId);
+                pStat2.setInt(1, lostId);
+                pStat2.setInt(2, foundId);
+                pStat2.executeUpdate();
             }
+            pStat2.close();
+            res.close();
+            pStat.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

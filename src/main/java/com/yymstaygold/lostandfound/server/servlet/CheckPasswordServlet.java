@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by yanyu on 2018/4/8.
@@ -31,17 +28,19 @@ public class CheckPasswordServlet extends HttpServlet {
         DataOutputStream out = new DataOutputStream(response.getOutputStream());
         try {
             Connection conn = DatabaseConnectionPool.getInstance().getConnection();
-            Statement stat = conn.createStatement();
-            ResultSet res = stat.executeQuery("SELECT userId FROM LostAndFound.User " +
-                    "WHERE password = \"" + password + "\" " +
-                    "AND phoneNumber = \"" + phoneNumber + "\"");
+            PreparedStatement pStat = conn.prepareStatement(
+                    "SELECT userId FROM LostAndFound.User " +
+                            "WHERE password = ? AND phoneNumber = ?");
+            pStat.setString(1, password);
+            pStat.setString(2, phoneNumber);
+            ResultSet res = pStat.executeQuery();
             if (res.next()) {
                 out.writeInt(res.getInt("userId"));
             } else {
                 out.writeInt(-1);
             }
             res.close();
-            stat.close();
+            pStat.close();
             conn.close();
         } catch (SQLException e) {
             out.writeInt(-1);
