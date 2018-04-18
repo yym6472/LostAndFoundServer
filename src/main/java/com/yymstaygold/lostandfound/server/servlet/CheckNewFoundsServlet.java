@@ -13,39 +13,45 @@ import java.io.IOException;
 import java.sql.*;
 
 /**
- * Created by yanyu on 2018/4/8.
+ * Created by yanyu on 2018/4/12.
  */
-@WebServlet(name = "CheckPasswordServlet", urlPatterns = {"/check_password"})
-public class CheckPasswordServlet extends HttpServlet {
+@WebServlet(name = "CheckNewFoundsServlet")
+public class CheckNewFoundsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         DataInputStream in = new DataInputStream(request.getInputStream());
-        String phoneNumber = in.readUTF();
-        String password = in.readUTF();
+        int userId = in.readInt();
         in.close();
 
         DataOutputStream out = new DataOutputStream(response.getOutputStream());
         try {
             Connection conn = DatabaseConnectionPool.getInstance().getConnection();
-            PreparedStatement pStat = conn.prepareStatement(
-                    "SELECT userId FROM LostAndFound.User " +
-                            "WHERE password = ? AND phoneNumber = ?");
-            pStat.setString(1, password);
-            pStat.setString(2, phoneNumber);
+            PreparedStatement pStat = conn.prepareStatement("SELECT lostId, foundId " +
+                    "FROM LostAndFound.MatchInfo NATURAL JOIN LostAndFound.Lost " +
+                    "WHERE userId = ?");
+            pStat.setInt(1, userId);
             ResultSet res = pStat.executeQuery();
-            if (res.next()) {
-                out.writeInt(res.getInt("userId"));
-            } else {
-                out.writeInt(-1);
+            PreparedStatement pStat2 = conn.prepareStatement(
+                    "DELETE FROM LostAndFound.MatchInfo " +
+                            "WHERE lostId = ? AND foundId = ?");
+            while (res.next()) {
+                int lostId = res.getInt("lostId");
+                int foundId = res.getInt("foundId");
+                out.writeInt(lostId);
+                out.writeInt(foundId);
+                pStat2.setInt(1, lostId);
+                pStat2.setInt(2, foundId);
+                pStat2.executeUpdate();
             }
+            pStat2.close();
             res.close();
             pStat.close();
             conn.close();
         } catch (SQLException e) {
-            out.writeInt(-1);
             e.printStackTrace();
         }
+        out.writeInt(-1);
         out.close();
     }
 
