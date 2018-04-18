@@ -28,7 +28,7 @@ public class DatabaseConnectionPool {
         Properties prop = new Properties();
         try {
             FileInputStream in = new FileInputStream(
-            "./webapps/LostAndFoundServer/WEB-INF/classes/jdbc.properties");
+            "../webapps/LostAndFoundServer/WEB-INF/classes/jdbc.properties");
             prop.load(in);
             in.close();
         } catch (FileNotFoundException e) {
