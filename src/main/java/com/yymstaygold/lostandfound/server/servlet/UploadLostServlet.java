@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -26,6 +27,7 @@ public class UploadLostServlet extends HttpServlet {
             throws ServletException, IOException {
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         Lost lost = mapper.readValue(request.getInputStream(), Lost.class);
         lost.store();
 

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by yanyu on 2018/4/20.
@@ -37,6 +38,7 @@ public class DownloadLostInfoServlet extends HttpServlet {
         Lost lost = Lost.getInstanceFromDB(lostId);
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
         try {
             mapper.writeValue(response.getOutputStream(), lost);

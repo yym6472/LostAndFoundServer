@@ -2,7 +2,6 @@ package com.yymstaygold.lostandfound.server.entity;
 
 import com.yymstaygold.lostandfound.server.util.dbcp.DatabaseConnectionPool;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
