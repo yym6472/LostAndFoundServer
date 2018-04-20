@@ -23,21 +23,25 @@ public class CheckUserFoundServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DataInputStream in = new DataInputStream(request.getInputStream());
-        int foundId = in.readInt();
+        int userId = in.readInt();
         in.close();
+
+        outputUserFoundToStream(userId, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int foundId = new Integer(request.getParameter("foundId"));
+        int userId = new Integer(request.getParameter("userId"));
+
+        outputUserFoundToStream(userId, response);
     }
 
-    private void outputUserFoundToStream(int foundId, HttpServletResponse response) {
+    private void outputUserFoundToStream(int userId, HttpServletResponse response) {
         try {
             Connection conn = DatabaseConnectionPool.getInstance().getConnection();
             PreparedStatement pStat = conn.prepareStatement(
-                    "SELECT foundId FROM LostAndFound.Found WHERE foundId = ?");
-            pStat.setInt(1, foundId);
+                    "SELECT foundId FROM LostAndFound.Found WHERE userId = ?");
+            pStat.setInt(1, userId);
             ResultSet res = pStat.executeQuery();
             DataOutputStream out = new DataOutputStream(response.getOutputStream());
             while (res.next()) {
