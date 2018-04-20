@@ -15,7 +15,7 @@ import java.sql.*;
 /**
  * Created by yanyu on 2018/4/12.
  */
-@WebServlet(name = "CheckNewFoundsServlet")
+@WebServlet(name = "CheckNewFoundsServlet", urlPatterns = {"/check_new_founds"})
 public class CheckNewFoundsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

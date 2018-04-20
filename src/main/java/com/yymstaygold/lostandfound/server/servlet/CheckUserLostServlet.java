@@ -18,7 +18,7 @@ import java.sql.SQLException;
 /**
  * Created by yanyu on 2018/4/20.
  */
-@WebServlet(name = "CheckUserLostServlet", urlPatterns = {"check_user_lost"})
+@WebServlet(name = "CheckUserLostServlet", urlPatterns = {"/check_user_lost"})
 public class CheckUserLostServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
