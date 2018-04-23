@@ -39,10 +39,7 @@ public class Lost {
             res = stat.executeQuery("SELECT * FROM LostAndFound.LostPositionInfo " +
                     "WHERE lostId = " + lostId + " ORDER BY time ASC");
             while (res.next()) {
-                lostPositionInfoTime.add(new Date(
-                        res.getDate("time").getTime() +
-                                res.getTime("time").getTime()
-                ));
+                lostPositionInfoTime.add(new Date(res.getTimestamp("time").getTime()));
                 lostPositionInfoPositionX.add(res.getDouble("positionX"));
                 lostPositionInfoPositionY.add(res.getDouble("positionY"));
             }
@@ -99,7 +96,7 @@ public class Lost {
             assert lostPositionInfoPositionX.size() == recordSize;
             assert lostPositionInfoPositionY.size() == recordSize;
             for (int i = 0; i < recordSize; ++i) {
-                pStat.setDate(1, new java.sql.Date(
+                pStat.setTimestamp(1, new Timestamp(
                         lostPositionInfoTime.get(i).getTime()));
                 pStat.setDouble(2,
                         lostPositionInfoPositionX.get(i));

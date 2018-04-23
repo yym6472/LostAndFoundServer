@@ -41,7 +41,7 @@ public class UploadFoundServlet extends HttpServlet {
                             "WHERE a.solved = 0 " +
                             "GROUP BY a.lostId " +
                             "HAVING minTime < ?");
-            pStat.setDate(1, new java.sql.Date(found.getFoundTime().getTime()));
+            pStat.setTimestamp(1, new java.sql.Timestamp(found.getFoundTime().getTime()));
             ResultSet res = pStat.executeQuery();
 
             ArrayList<LostAndFoundPair> pairs = new ArrayList<>();

@@ -31,9 +31,7 @@ public class Found {
                 foundName = res.getString("foundName");
                 userId = res.getInt("userId");
                 item = Item.getInstanceFromDB(res.getInt("itemId"));
-                foundTime = new Date(
-                        res.getDate("foundTime").getTime() +
-                                res.getTime("foundTime").getTime());
+                foundTime = new Date(res.getTimestamp("foundTime").getTime());
                 foundPositionX = res.getDouble("foundPositionX");
                 foundPositionY = res.getDouble("foundPositionY");
             }
@@ -84,7 +82,7 @@ public class Found {
             pStat.setString(1, foundName);
             pStat.setInt(2, userId);
             pStat.setInt(3, item.getItemId());
-            pStat.setDate(4, new java.sql.Date(foundTime.getTime()));
+            pStat.setTimestamp(4, new Timestamp(foundTime.getTime()));
             pStat.setDouble(5, foundPositionX);
             pStat.setDouble(6, foundPositionY);
             pStat.executeUpdate();

@@ -39,9 +39,9 @@ public class UploadLostServlet extends HttpServlet {
             pStat.setInt(1, lost.getLostId());
             ResultSet res = pStat.executeQuery();
 
-            Date minTime = null;
+            Timestamp minTime = null;
             if (res.next()) {
-                minTime = res.getDate(1);
+                minTime = res.getTimestamp(1);
             }
             res.close();
             pStat.close();
@@ -49,7 +49,7 @@ public class UploadLostServlet extends HttpServlet {
             pStat = conn.prepareStatement(
                     "SELECT foundId FROM LostAndFound.Found " +
                             "WHERE foundTime > ? AND solved = 0");
-            pStat.setDate(1, minTime);
+            pStat.setTimestamp(1, minTime);
             res = pStat.executeQuery();
 
             ArrayList<LostAndFoundPair> pairs = new ArrayList<>();
