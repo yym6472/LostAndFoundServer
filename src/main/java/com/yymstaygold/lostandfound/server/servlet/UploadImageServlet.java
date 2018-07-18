@@ -1,5 +1,9 @@
 package com.yymstaygold.lostandfound.server.servlet;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
+import com.yymstaygold.lostandfound.server.entity.UploadImageResult;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,10 +44,16 @@ public class UploadImageServlet extends HttpServlet {
         file.close();
         in.close();
 
-        DataOutputStream out = new DataOutputStream(response.getOutputStream());
-        out.writeUTF(imagePath + filename);
-        out.close();
+        Gson gson = new Gson();
 
+        UploadImageResult result = new UploadImageResult();
+        result.setCode(0);
+        result.setMessage("成功");
+        UploadImageResult.ResultBean resultBean = new UploadImageResult.ResultBean();
+        resultBean.setImageUrl(imagePath + filename);
+        result.setResult(resultBean);
+
+        gson.toJson(result, response.getWriter());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
