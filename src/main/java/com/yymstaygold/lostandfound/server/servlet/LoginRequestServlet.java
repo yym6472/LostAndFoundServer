@@ -37,7 +37,10 @@ public class LoginRequestServlet extends HttpServlet {
             ResultSet res = pStat.executeQuery();
             int userId = -1;
 
+            LoginResult.ResultBean resultBean = new LoginResult.ResultBean();
+
             if (res.next()) {
+                resultBean.setFirstLogin(false);
                 userId = res.getInt("userId");
                 String oldChannelId = res.getString("channelId");
                 int isOnline = res.getInt("isOnline");
@@ -53,9 +56,10 @@ public class LoginRequestServlet extends HttpServlet {
                     BaiduPushUtils.forceOffline(oldChannelId);
                 }
             } else {
+                resultBean.setFirstLogin(true);
                 PreparedStatement pStat2 = connection.prepareStatement(
                         "INSERT INTO LostAndFound.User " +
-                                "VALUES (null, ?, ?, 1)", Statement.RETURN_GENERATED_KEYS);
+                                "VALUES (null, ?, ?, 1, null, null, null, null)", Statement.RETURN_GENERATED_KEYS);
                 pStat2.setString(1, phoneNumber);
                 pStat2.setString(2, channelId);
                 pStat2.executeUpdate();
@@ -70,7 +74,6 @@ public class LoginRequestServlet extends HttpServlet {
             pStat.close();
             connection.close();
 
-            LoginResult.ResultBean resultBean = new LoginResult.ResultBean();
             resultBean.setUserId(userId);
             LoginResult result = new LoginResult();
             result.setCode(0);
